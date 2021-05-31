@@ -1,26 +1,36 @@
-let http = require('http');
 require('dotenv').config();
+let qs = require('querystring');
+let http = require('http');
+
+let responder = (req, res, params) => {
+    res.writeHead(200, {"Content-type" : "text/html"});
+    res.end(params);
+}
 
 let routes = {
     "GET" : {
-        "/" : (req, res, params) => {
-            res.writeHead(200, {"Content-type" : "text/html"}),
-            res.end("<h1>GET method => /</h1>");
+        "/" : (req, res) => {
+            responder(req, res, "<h1>GET method => /</h1>");
         },
-        "/home" : (req, res, params) => {
-            res.writeHead(200, {"Content-type" : "text/html"}),
-            res.end("<h1>GET method => /home</h1>")
+        "/home" : (req, res) => {
+            responder(req, res, "<h1>GET method => /home</h1>");
         }
     },
     "POST" : {
-        "/" : (req, res, params) => {
-            res.writeHead(200, {"Content-type" : "text/html"}),
-            res.end("<h1>POST method => /</h1>")
+        "/" : (req, res) => {
+            responder(req, res, "<h1>POST method => /</h1>");
         },
-        "/about" : (req, res, params) => {
-            res.writeHead(200, {"Content-type" : "text/html"}),
-            res.end(`<h1>POST method => /about with the params of 
-            name => ${params.get("name")} age => ${params.get("age")}</h1>`);
+        "/api/login" : (req, res) => {
+            let body = "";
+            req.on('data', data => {
+                body += data;
+            });
+
+            req.on('end', () => {
+                let query = qs.parse(body);
+                console.log(`Password is ${query.password} and Email is ${query.password}`);
+                res.end();
+            })
         }
     },
     "NA" : (req, res) => {
