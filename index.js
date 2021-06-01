@@ -10,10 +10,16 @@ let responder = (req, res, params) => {
 let routes = {
     "GET" : {
         "/" : (req, res) => {
-            responder(req, res, "<h1>GET method => /</h1>");
+            let filepath = __dirname + "/index.html";
+            responder(req, res, filepath);
         },
-        "/home" : (req, res) => {
-            responder(req, res, "<h1>GET method => /home</h1>");
+        "/index.html" : (req, res) => { 
+            let filepath = __dirname + "/index.html";
+            responder(req, res, filepath);
+        },
+        "/about.html" : (req, res) => {
+            let filepath = __dirname + "/about.html";
+            responder(req, res, filepath);
         }
     },
     "POST" : {
@@ -24,6 +30,10 @@ let routes = {
             let body = "";
             req.on('data', data => {
                 body += data;
+                if(body.length > 1024) { // When image size is too big...
+                    res.writeHead(403, {"Content-type" : "text/html"});
+                    res.end("File size is bigger than 1MB");
+                }
             });
 
             req.on('end', () => {
